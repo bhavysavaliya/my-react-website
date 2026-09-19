@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Analytics } from "@vercel/analytics/react";
 import { pages } from "./pages";
 
 const routeNames = {
@@ -95,6 +96,9 @@ export default function App() {
   }, [title]);
 
   return (
-    <div className="react-migration-root" dangerouslySetInnerHTML={{ __html: html }} />
+    <>
+      <div className="react-migration-root" dangerouslySetInnerHTML={{ __html: html }} />
+      <Analytics />
+    </>
   );
 }
