@@ -1,0 +1,9 @@
+
+/* React migration helpers */
+html { scroll-behavior: smooth; }
+.react-migration-root { min-height: 100vh; }
+.mobile-menu.active { display: block; }
+.gallery-modal.active, .gallery-modal.show, .lightbox.active { display: flex; }
+
+/* Keep media inside its original containers after moving from static HTML to React. */
+img { max-width: 100%; }
