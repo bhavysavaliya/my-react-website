@@ -63,25 +63,60 @@ export default function App() {
     openBtn?.addEventListener("click", openMenu);
     closeBtn?.addEventListener("click", closeMenu);
 
+    // The gallery modal markup (#galleryModal) is shown via `display`, not a
+    // CSS class, so drive it directly here to match the original site behavior.
+    const getModal = () => document.getElementById("galleryModal");
+
+    const closeGalleryModal = () => {
+      const modal = getModal();
+      if (!modal) return;
+      modal.style.display = "none";
+      document.body.style.overflow = "";
+    };
+
     const galleryHandler = (e) => {
+      // Close when clicking the close button or the modal backdrop.
+      const modal = getModal();
+      if (modal && modal.style.display === "flex") {
+        if (e.target.closest?.("#closeGalleryModal") || e.target === modal) {
+          closeGalleryModal();
+          return;
+        }
+      }
+
       const item = e.target.closest?.(".gallery-item, .gallery-image, [data-gallery]");
       if (!item) return;
       const img = item.querySelector?.("img") || (item.tagName === "IMG" ? item : null);
-      if (!img) return;
-      // Use existing gallery modal if the original markup provides one.
-      const modal = document.querySelector(".gallery-modal, #galleryModal, .lightbox");
-      if (modal) {
-        const modalImg = modal.querySelector("img");
-        if (modalImg) modalImg.src = img.currentSrc || img.src;
-        modal.classList.add("active", "show");
+      if (!img || !modal) return;
+
+      const modalImg = modal.querySelector("#modalImage") || modal.querySelector("img");
+      if (modalImg) {
+        modalImg.src = img.currentSrc || img.src;
+        modalImg.alt = img.alt || "";
       }
+
+      const caption = modal.querySelector("#modalCaption");
+      if (caption) {
+        const title = img.getAttribute("data-caption-title");
+        const desc = img.getAttribute("data-caption-desc");
+        caption.innerHTML = title && desc ? `<h3>${title}</h3><p>${desc}</p>` : img.alt || "";
+      }
+
+      modal.style.display = "flex";
+      document.body.style.overflow = "hidden";
     };
     document.addEventListener("click", galleryHandler);
+
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") closeGalleryModal();
+    };
+    document.addEventListener("keydown", onKeyDown);
 
     return () => {
       window.removeEventListener("popstate", onPop);
       document.removeEventListener("click", onClick);
       document.removeEventListener("click", galleryHandler);
+      document.removeEventListener("keydown", onKeyDown);
       openBtn?.removeEventListener("click", openMenu);
       closeBtn?.removeEventListener("click", closeMenu);
     };
