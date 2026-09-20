@@ -9,6 +9,9 @@ import "./styles/services.css";
 import "./styles/gallery.css";
 import "./styles/contact.css";
 import "./migration.css";
+import { injectSpeedInsights } from "@vercel/speed-insights";
+
+injectSpeedInsights();
 
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>
