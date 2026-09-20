@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { createRoot } from "react-dom/client";
 import { pages } from "./pages";
-import AdminPage from "./AdminPage";
-import DynamicProducts from "./DynamicProducts";
 
 const routeNames = {
   "/": "Home",
@@ -11,7 +8,6 @@ const routeNames = {
   "/services": "Services",
   "/gallery": "Gallery",
   "/contact": "Contact",
-  "/admin": "Admin",
 };
 
 function normalizePath(pathname) {
@@ -22,7 +18,6 @@ function normalizePath(pathname) {
     "/Services": "/services",
     "/Gallery": "/gallery",
     "/Contact": "/contact",
-    "/Admin": "/admin",
     "/index.html": "/",
   };
   return aliases[p] || p;
@@ -127,31 +122,12 @@ export default function App() {
     };
   }, [path]);
 
-  // Mount the dynamic product grid into the Products page markup, which is
-  // injected as static HTML via dangerouslySetInnerHTML.
-  useEffect(() => {
-    if (path !== "/products") return;
-    const mount = document.getElementById("dynamic-products-root");
-    if (!mount) return;
-    const root = createRoot(mount);
-    root.render(<DynamicProducts />);
-    return () => {
-      // Defer unmount so it doesn't run during React's render/commit phase.
-      queueMicrotask(() => root.unmount());
-    };
-  }, [path]);
-
+  const html = pages[path] || pages["/"];
   const title = routeNames[path] || "Jamka Agrofed";
 
   useEffect(() => {
     document.title = `${title} | Jamka Agrofed Producer Company Limited`;
   }, [title]);
-
-  if (path === "/admin") {
-    return <AdminPage />;
-  }
-
-  const html = pages[path] || pages["/"];
 
   return (
     <div className="react-migration-root" dangerouslySetInnerHTML={{ __html: html }} />
