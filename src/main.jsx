@@ -8,6 +8,7 @@ import "./styles/products.css";
 import "./styles/services.css";
 import "./styles/gallery.css";
 import "./styles/contact.css";
+import "./styles/admin.css";
 import "./migration.css";
 
 createRoot(document.getElementById("root")).render(
